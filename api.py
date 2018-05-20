@@ -4,7 +4,7 @@ from flask_restful import reqparse, abort, Api, Resource
 app = Flask(__name__)
 api = Api(app)
 
-TODOS = {
+DATOS = {
     'coche1': {
                 'speed': 70,
                 'engine': 'stop',
@@ -34,7 +34,7 @@ TODOS = {
 
 
 def abort_if_todo_doesnt_exist(coche_id):
-    if coche_id not in TODOS:
+    if coche_id not in DATOS:
         abort(404, message="Conohe {} doesn't exist".format(coche_id))
 
 parser = reqparse.RequestParser() 
@@ -48,13 +48,13 @@ parser.add_argument('status')
 class Todo(Resource):
     def get(self, coche_id):
         abort_if_todo_doesnt_exist(coche_id)
-        return TODOS[coche_id]
+        return DATOS[coche_id]
 
 
 
     def delete(self, coche_id): 
         abort_if_todo_doesnt_exist(coche_id)
-        del TODOS[coche_id]
+        del DATOS[coche_id]
         return 'Realizado con exito.', 204
 
 
@@ -62,23 +62,23 @@ class Todo(Resource):
 
     def put(self, coche_id): 
         args = parser.parse_args()
-        TODOS[coche_id] = {'engine': args['engine'],'sensor': args['sensor'],'speed': args['speed'],'status': args['status']}
+        DATOS[coche_id] = {'engine': args['engine'],'sensor': args['sensor'],'speed': args['speed'],'status': args['status']}
         return 'Ralizado con exito.', 201
 
 
 # TodoList
-# shows a list of all todos, and lets you POST to add new tasks
+# shows a list of all DATOS, and lets you POST to add new tasks
 class TodoList(Resource):
     def get(self):
-        return TODOS
+        return DATOS
 
     def post(self):
         args = parser.parse_args()
-        coche_id = int(max(TODOS.keys()).lstrip('coche')) + 1
+        coche_id = int(max(DATOS.keys()).lstrip('coche')) + 1
         coche_id = 'coche%i' % coche_id 
-        TODOS[coche_id] = {'engine': args['engine'],'sensor': args['sensor'],'speed': args['speed'],'status': args['status']}
+        DATOS[coche_id] = {'engine': args['engine'],'sensor': args['sensor'],'speed': args['speed'],'status': args['status']}
         
-        return TODOS[coche_id], 201
+        return DATOS[coche_id], 201
 
 ##
 ## Actually setup the Api resource routing here
